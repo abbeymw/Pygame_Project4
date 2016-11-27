@@ -54,7 +54,7 @@ class Setting(object):
         self.wall_list = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
  
-class Environ(Setting):
+class Maze(Setting):
     def __init__(self):
         super().__init__()
         #[x, y, width, height]
@@ -126,55 +126,68 @@ class Environ(Setting):
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode([800, 600])
+    disp = pygame.display.set_mode([800, 600])
     pygame.display.set_caption("Abbey's Maze Game")
     player = player_(20, 555)
     movingsprites = pygame.sprite.Group()
     movingsprites.add(player)
-    room = Environ()
+    maze = Maze()
+
     clock = pygame.time.Clock()
+    font = pygame.font.Font(None, 25)
+    f_count = 0
+    f_rate = 60
+    start_time = 60
+
     done = False
     while not done: 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
- 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    player.change_speed(-3, 0)
-                if event.key == pygame.K_RIGHT:
-                    player.change_speed(3, 0)
-                if event.key == pygame.K_UP:
-                    player.change_speed(0, -3)
-                if event.key == pygame.K_DOWN:
-                    player.change_speed(0, 3)
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    player.change_speed(3, 0)
-                if event.key == pygame.K_RIGHT:
-                    player.change_speed(-3, 0)
-                if event.key == pygame.K_UP:
-                    player.change_speed(0, 3)
-                if event.key == pygame.K_DOWN:
-                    player.change_speed(0, -3)
+        player.move(maze.wall_list)
+        disp.fill((0, 0, 0))
 
-        player.move(room.wall_list)
+        tot_secs = start_time - (f_count//f_rate)
+        if tot_secs < 0:
+            done = True
+            print("you ran out of time")
+        secs = tot_secs % 60
+        mins = (tot_secs//60)
+        time_shown = "Time: {0:02}:{1:02}".format(mins, secs)
+        text = font.render(time_shown, True, WHITE)
+        disp.blit(text, [650, 20])
+        f_count += 1
+        clock.tick(f_rate)
  
-        if player.rect.x > 801:
-        	pygame.quit()
-
-        try: 
-        	screen.fill((0, 0, 0))
-        except:
-        	pass
- 
-        movingsprites.draw(screen)
-        room.wall_list.draw(screen)
+        movingsprites.draw(disp)
+        maze.wall_list.draw(disp)
  
         pygame.display.flip()
- 
-        clock.tick(60)
- 
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    player.change_speed(-2, 0)
+                if event.key == pygame.K_RIGHT:
+                    player.change_speed(2, 0)
+                if event.key == pygame.K_UP:
+                    player.change_speed(0, -2)
+                if event.key == pygame.K_DOWN:
+                    player.change_speed(0, 2)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    player.change_speed(2, 0)
+                if event.key == pygame.K_RIGHT:
+                    player.change_speed(-2, 0)
+                if event.key == pygame.K_UP:
+                    player.change_speed(0,2)
+                if event.key == pygame.K_DOWN:
+                    player.change_speed(0, -2)
+
+            if player.rect.x > 801:
+                done = True
+                print("You won!")
+
+            if event.type == pygame.QUIT:
+                done = True
+
     pygame.quit()
  
 if __name__ == "__main__":

@@ -16,37 +16,37 @@ class player_(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
  
-    # def change_speed(self, x, y):
-    #     self.speed_x += x
-    #     self.speed_y += y
+    def change_speed(self, x, y):
+        self.x_pos += x
+        self.y_pos += y
  
-    # def move(self, walls):
-    #     self.rect.x += self.x_pos
-    #     list_of_blocks = pygame.sprite.spritecollide(self, walls, False)
-    #     for b in list_of_blocks:
-    #         if self.x_pos > 0:
-    #             self.rect.right = b.rect.left
-    #         else:
-    #             self.rect.left = b.rect.right
-    #     self.rect.y += self.y_pos
-    #     list_of_blocks = pygame.sprite.spritecollide(self, walls, False)
-    #     for b in list_of_blocks:
-    #         if self.y_pos > 0:
-    #             self.rect.bottom = b.rect.top
-    #         else:
-    #             self.rect.top = b.rect.bottom
-    def handle_keys(self, walls):
-        """ Handles Keys """
-        key = pygame.key.get_pressed()
-        dist = 2 # distance moved in 1 frame, try changing it to 5
-        if key[pygame.K_DOWN]: # down key
-            self.y_pos += dist # move down
-        elif key[pygame.K_UP]: # up key
-            self.y_pos -= dist # move up
-        if key[pygame.K_RIGHT]: # right key
-            self.x_pos += dist # move right
-        elif key[pygame.K_LEFT]: # left key
-            self.x_pos -= dist
+    def move(self, walls):
+        self.rect.x += self.x_pos
+        list_of_blocks = pygame.sprite.spritecollide(self, walls, False)
+        for b in list_of_blocks:
+            if self.x_pos > 0:
+                self.rect.right = b.rect.left
+            else:
+                self.rect.left = b.rect.right
+        self.rect.y += self.y_pos
+        list_of_blocks = pygame.sprite.spritecollide(self, walls, False)
+        for b in list_of_blocks:
+            if self.y_pos > 0:
+                self.rect.bottom = b.rect.top
+            else:
+                self.rect.top = b.rect.bottom
+    # def handle_keys(self, walls):
+    #     """ Handles Keys """
+    #     key = pygame.key.get_pressed()
+    #     dist = 2 # distance moved in 1 frame, try changing it to 5
+    #     if key[pygame.K_DOWN]: # down key
+    #         self.y_pos += dist # move down
+    #     elif key[pygame.K_UP]: # up key
+    #         self.y_pos -= dist # move up
+    #     if key[pygame.K_RIGHT]: # right key
+    #         self.x_pos += dist # move right
+    #     elif key[pygame.K_LEFT]: # left key
+    #         self.x_pos -= dist
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h, color):
@@ -57,13 +57,13 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y 
         
-class Setting(object):
-    wall_list = None
-    enemy_sprites = None
+# class Setting(object):
+#     wall_list = None
+#     enemy_sprites = None
  
-    def __init__(self):
-        self.wall_list = pygame.sprite.Group()
-        self.enemy_sprites = pygame.sprite.Group()
+#     def __init__(self):
+#         self.wall_list = pygame.sprite.Group()
+#         self.enemy_sprites = pygame.sprite.Group()
 
 # class Enemies(pygame.sprite.Sprite):
 #     def __init__(self, x, y, w, h, color):
@@ -83,9 +83,10 @@ class Setting(object):
 #             enemy = Enemies(e[0], e[1], e[2], e[3], e[4])
 #             self.enemy_sprites.add(enemy)
  
-class Maze(Setting):
+class Maze(object):
     def __init__(self):
-        super().__init__()
+        # super().__init__()
+        self.wall_list = pygame.sprite.Group()
         #[x, y, width, height]
         walls_creation = [[0, 0, 20, 600, WHITE],
                  [780, 0, 20, 250, WHITE],
@@ -180,7 +181,7 @@ def main():
 
     game_over = False
     while not game_over: 
-        player.handle_keys(maze.wall_list)
+        player.move(maze.wall_list)
         # player.handle_keys()
         disp.fill((0, 0, 0))
 
@@ -204,24 +205,24 @@ def main():
         pygame.display.flip()
 
         for event in pygame.event.get():
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_LEFT:
-            #         player.change_speed(-2, 0)
-            #     if event.key == pygame.K_RIGHT:
-            #         player.change_speed(2, 0)
-            #     if event.key == pygame.K_UP:
-            #         player.change_speed(0, -2)
-            #     if event.key == pygame.K_DOWN:
-            #         player.change_speed(0, 2)
-            # if event.type == pygame.KEYUP:
-            #     if event.key == pygame.K_LEFT:
-            #         player.change_speed(2, 0)
-            #     if event.key == pygame.K_RIGHT:
-            #         player.change_speed(-2, 0)
-            #     if event.key == pygame.K_UP:
-            #         player.change_speed(0,2)
-            #     if event.key == pygame.K_DOWN:
-            #         player.change_speed(0, -2)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    player.change_speed(-2, 0)
+                if event.key == pygame.K_RIGHT:
+                    player.change_speed(2, 0)
+                if event.key == pygame.K_UP:
+                    player.change_speed(0, -2)
+                if event.key == pygame.K_DOWN:
+                    player.change_speed(0, 2)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    player.change_speed(2, 0)
+                if event.key == pygame.K_RIGHT:
+                    player.change_speed(-2, 0)
+                if event.key == pygame.K_UP:
+                    player.change_speed(0,2)
+                if event.key == pygame.K_DOWN:
+                    player.change_speed(0, -2)
             # if event.type == pygame.KEYDOWN:
             #     if event.key == pygame.K_LEFT:
             #         player.x_pos -= 1

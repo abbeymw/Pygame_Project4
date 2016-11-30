@@ -57,35 +57,35 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y 
         
-# class Setting(object):
-#     wall_list = None
-#     enemy_sprites = None
+class Setting(object):
+    wall_list = None
+    enemy_sprites = None
  
-#     def __init__(self):
-#         self.wall_list = pygame.sprite.Group()
-#         self.enemy_sprites = pygame.sprite.Group()
-
-# class Enemies(pygame.sprite.Sprite):
-#     def __init__(self, x, y, w, h, color):
-#         super().__init__()
-#         self.image = pygame.Surface([w, h])
-#         self.image.fill(color)
-#         self.rect = self.image.get_rect()
-#         self.rect.x = x
-#         self.rect.y = y 
-#         # self.draw()
-
-# class Enemy_placement(Setting):
-#     def __init__(self):
-#         super().__init__()
-#         enemies_creation = [[20, 20, 20, 20, GREEN]]
-#         for e in enemies_creation:
-#             enemy = Enemies(e[0], e[1], e[2], e[3], e[4])
-#             self.enemy_sprites.add(enemy)
- 
-class Maze(object):
     def __init__(self):
-        # super().__init__()
+        self.wall_list = pygame.sprite.Group()
+        self.enemy_sprites = pygame.sprite.Group()
+
+class Enemies(pygame.sprite.Sprite):
+    def __init__(self, x, y, w, h, color):
+        super().__init__()
+        self.image = pygame.Surface([w, h])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y 
+        # self.draw()
+
+class Enemy_placement(Setting):
+    def __init__(self):
+        super().__init__()
+        enemies_creation = [[20, 20, 20, 20, GREEN]]
+        for e in enemies_creation:
+            enemy = Enemies(e[0], e[1], e[2], e[3], e[4])
+            self.enemy_sprites.add(enemy)
+ 
+class Maze(Setting):
+    def __init__(self):
+        super().__init__()
         self.wall_list = pygame.sprite.Group()
         #[x, y, width, height]
         walls_creation = [[0, 0, 20, 600, WHITE],
@@ -164,7 +164,7 @@ def main():
     movingsprites = pygame.sprite.Group()
     movingsprites.add(player)
     maze = Maze()
-    # enemies = Enemy_placement()
+    enemies = Enemy_placement()
 
     #time clock
     clock = pygame.time.Clock()
@@ -175,7 +175,8 @@ def main():
 
     #music/sound
     pygame.mixer.init()
-    # pygame.mixer.music.load()
+    pygame.mixer.music.load('ElTech_-_Techno_Background_Music.wav')
+    pygame.mixer.music.play()
 
 
 
@@ -199,7 +200,7 @@ def main():
  
         movingsprites.draw(disp)
         maze.wall_list.draw(disp)
-        # enemies.draw(disp)
+        enemies.enemy_sprites.draw(disp)
 
  
         pygame.display.flip()

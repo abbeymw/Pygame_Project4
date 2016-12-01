@@ -40,9 +40,6 @@ class player_(pygame.sprite.Sprite):
                 self.rect.bottom = b.rect.top
             else:
                 self.rect.top = b.rect.bottom
-    # def collide(self,enemy,enemy_list,health):
-    #     if self.rect.colliderect(enemy.rect):  # Tests if the player is touching an enemy
-    #         self.health -= 1
             
     # def move(self, dx, dy):
     #     # Move each axis separately. Note that this checks for collisions both times.
@@ -100,7 +97,7 @@ class bonus_placement(Setting):
         bonus_creation = [[35, 283, 20, 20, green],
                             [342, 110, 20, 20, green], 
                             [170, 75, 20, 20, gold],
-                          [460, 105, 20, 20, green],
+                          [460, 105, 20, 20, gold],
                           [685, 505, 20, 20, gold],
                           [400, 230, 20, 20, green],
                           [225, 285, 20, 20, gold],
@@ -115,7 +112,17 @@ class bonus_placement(Setting):
                           [210, 490, 20, 20, green],
                           [210, 435, 20, 20, green],
                           [340, 435, 20, 20, green],
-                          [542, 230, 20, 20, green]]
+                          [542, 230, 20, 20, green],
+                          [610, 270, 20, 20, gold],
+                          [595, 555, 20, 20, green],
+                          [751, 175, 20, 20, green],
+                          [751, 435, 20, 20, green],
+                          [680, 80, 20, 20, green],
+                          [680, 310, 20, 20, green],
+                          [610, 215, 20, 20, green],
+                          [280, 35, 20, 20, green]
+                           # ,[400, 350, 20, 20, black]
+                          ]
         for b in bonus_creation:
             bonus = Bonus(b[0], b[1], b[2], b[3], b[4])
             self.bonus_sprites.add(bonus)
@@ -198,7 +205,7 @@ def main():
     pygame.init()
     disp = pygame.display.set_mode([800, 600])
     pygame.display.set_caption("Abbey's Maze Game for Project 4")
-    player = player_(20, 555)
+    player = player_(20, 548)
     movingsprites = pygame.sprite.Group()
     movingsprites.add(player)
     maze = Maze()
@@ -215,17 +222,20 @@ def main():
     pygame.mixer.init()
     pygame.mixer.music.load('ElTech_-_Techno_Background_Music.wav')
     pygame.mixer.music.play()
+    # pygame.mixer.fadeout(1000)
+    coin = pygame.mixer.Sound('Super_Mario_Bros.wav')
 
     game_over = False
     while not game_over: 
         player.move(maze.wall_list)
         # player.handle_keys()
-        disp.fill(white)
+        color = white
+        disp.fill(color)
 
         tot_secs = start_time - (f_count//f_rate)
-        #if tot_secs < 0:
-            #game_over = True
-            #print("You ran out of time!")
+        if tot_secs < 0:
+            game_over = True
+            print("You ran out of time!")
         secs = tot_secs%60
         mins = (tot_secs//60)
         time_shown = "Time: {0:02}:{1:02}".format(mins, secs)
@@ -234,7 +244,6 @@ def main():
         f_count += 1
         clock.tick(f_rate)
 
-        # h = player.health()
         score = "Score: {0}".format(str(player.score))
         text1 = font.render(score, True, black)
         disp.blit(text1, [650, 35])
@@ -289,10 +298,14 @@ def main():
         for b in bonus_pts.bonus_sprites:
             if player.rect.colliderect(b.rect):
                 bonus_pts.bonus_sprites.remove(b)
+                coin.play()
                 if b.color == green:
                     player.score += 1
                 elif b.color == gold:
                     player.score += 5
+                # elif b.color == black:
+                #     color = black
+                #     disp.update()
 
         if player.rect.x > 801:
             game_over = True
@@ -303,5 +316,21 @@ def main():
  
 if __name__ == "__main__":
     main()
+
+
+
+
+# create a rank, so like if you got between this and this score, 
+# you are a cub, this and this you are a mama bear, etc
+
+
+
+
+
+
+
+
+
+
 
 

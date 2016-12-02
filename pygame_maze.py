@@ -1,7 +1,8 @@
+# skeleton code from: http://programarcadegames.com/python_examples/show_file.php?file=maze_runner.py
 import pygame
-from pygame import *
-from pygame.sprite import *
-from random import *
+# from pygame import *
+# from pygame.sprite import *
+# from random import *
 
 white = (255, 255, 255)
 gray = (190,190,190)
@@ -102,7 +103,6 @@ class bonus_placement(Setting):
                           [680, 310, 20, 20, green],
                           [610, 215, 20, 20, green],
                           [280, 35, 20, 20, green]
-                          #[400, 350, 20, 20, black]
                           ]
         for b in bonus_creation:
             bonus = Bonus(b[0], b[1], b[2], b[3], b[4])
@@ -203,7 +203,6 @@ def main():
     pygame.mixer.init()
     pygame.mixer.music.load('ElTech_-_Techno_Background_Music.wav')
     pygame.mixer.music.play()
-    # pygame.mixer.fadeout(1000)
     coin = pygame.mixer.Sound('Super_Mario_Bros.wav')
 
     game_over = False
@@ -228,7 +227,6 @@ def main():
         score = "Score: {0}".format(str(player.score))
         text1 = font.render(score, True, black)
         disp.blit(text1, [650, 35])
-
  
         moving_sprites.draw(disp)
         maze.wall_list.draw(disp)

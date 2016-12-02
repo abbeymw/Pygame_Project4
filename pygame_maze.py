@@ -1,18 +1,14 @@
-# skeleton code from: http://programarcadegames.com/python_examples/show_file.php?file=maze_runner.py
+# skeleton code tutorial from: http://programarcadegames.com/python_examples/show_file.php?file=maze_runner.py
 import pygame
-# from pygame import *
-# from pygame.sprite import *
-# from random import *
 
 white = (255, 255, 255)
 gray = (190,190,190)
 green = (0,250,154)
-red = (255, 0, 0)
 black = (0,0,0)
 teal = (0,191,255)
 gold = (255, 215, 0)
  
-class player_(pygame.sprite.Sprite):
+class player_(pygame.sprite.Sprite): #creates the player class
     x_pos = 0
     y_pos = 0
  
@@ -25,11 +21,11 @@ class player_(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def change_pos(self, x, y):
+    def change_pos(self, x, y): #moves the position of the player
         self.x_pos += x
         self.y_pos += y
  
-    def move(self, walls):
+    def move(self, walls): #checks if collision with walls or bonus coins
         self.rect.x += self.x_pos
         list_of_blocks = pygame.sprite.spritecollide(self, walls, False)
         for b in list_of_blocks:
@@ -45,7 +41,7 @@ class player_(pygame.sprite.Sprite):
             else:
                 self.rect.top = b.rect.bottom
 
-class Wall(pygame.sprite.Sprite):
+class Wall(pygame.sprite.Sprite): #creates wall class
     def __init__(self, x, y, w, h, color):
         super().__init__()
         self.image = pygame.Surface([w, h])
@@ -54,7 +50,7 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y 
         
-class Setting(object):
+class Setting(object): #creates setting class that encompasses the walls and bonus coins
     wall_list = None
     bonus_sprites = None
  
@@ -62,7 +58,7 @@ class Setting(object):
         self.wall_list = pygame.sprite.Group()
         self.bonus_sprites = pygame.sprite.Group()
 
-class Bonus(pygame.sprite.Sprite):
+class Bonus(pygame.sprite.Sprite): #creates a bonus class
     def __init__(self, x, y, w, h, color):
         super().__init__()
         self.image = pygame.Surface([w, h])
@@ -72,7 +68,7 @@ class Bonus(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y 
 
-class bonus_placement(Setting):
+class bonus_placement(Setting): #places the bonus coins on the screen
     def __init__(self):
         super().__init__()
         self.bonus_sprites = pygame.sprite.Group()
@@ -108,7 +104,7 @@ class bonus_placement(Setting):
             bonus = Bonus(b[0], b[1], b[2], b[3], b[4])
             self.bonus_sprites.add(bonus)
  
-class Maze(Setting):
+class Maze(Setting): #creates the maze part of the setting class
     def __init__(self):
         super().__init__()
         self.wall_list = pygame.sprite.Group()
@@ -179,10 +175,10 @@ class Maze(Setting):
                 ]
         for w in walls_creation:
             wall = Wall(w[0], w[1], w[2], w[3], w[4])
-            self.wall_list.add(wall)
+            self.wall_list.add(wall) #places the walls in the maze
 
 def main():
-    #game stuff
+    # initializes important game components
     pygame.init()
     disp = pygame.display.set_mode([800, 600])
     pygame.display.set_caption("Abbey's Maze Game for Project 4")
@@ -192,41 +188,40 @@ def main():
     maze = Maze()
     bonus_pts = bonus_placement()
 
-    #time clock
+    # creates time clock
     clock = pygame.time.Clock()
     font = pygame.font.Font(None, 25)
     f_count = 0
     f_rate = 60
     start_time = 60
 
-    #music/sound
+    # loads/plays music and loads coin sound
     pygame.mixer.init()
     pygame.mixer.music.load('ElTech_-_Techno_Background_Music.wav')
     pygame.mixer.music.play()
     coin = pygame.mixer.Sound('Super_Mario_Bros.wav')
 
-    game_over = False
+    game_over = False #while game is playing
     while not game_over: 
-        color = white
-        disp.fill(color)
-        player.move(maze.wall_list)
+        disp.fill(white) #fills the screen
+        player.move(maze.wall_list) #moves the player
 
-        tot_secs = start_time - (f_count//f_rate)
-        if tot_secs < 1:
-            game_over = True
+        tot_secs = start_time - (f_count//f_rate) #counts the secs remaining
+        if tot_secs < 1: #if less than 1 sec
+            game_over = True #end the game
             print("You ran out of time!")
             print("Your Score: " + str(player.score))
         secs = tot_secs%60
         mins = (tot_secs//60)
-        time_shown = "Time: {0:02}:{1:02}".format(mins, secs)
-        text = font.render(time_shown, True, black)
+        time_shown = "Time: {0:02}:{1:02}".format(mins, secs) 
+        text = font.render(time_shown, True, black) #prints time on screen
         disp.blit(text, [650, 20])
         f_count += 1
         clock.tick(f_rate)
 
         score = "Score: {0}".format(str(player.score))
         text1 = font.render(score, True, black)
-        disp.blit(text1, [650, 35])
+        disp.blit(text1, [650, 35]) #prints score on screen
  
         moving_sprites.draw(disp)
         maze.wall_list.draw(disp)
@@ -234,10 +229,10 @@ def main():
  
         pygame.display.flip()
 
-        for event in pygame.event.get():
+        for event in pygame.event.get(): 
             if event.type == pygame.QUIT:
                 game_over = True
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN: #moves the player according to which keys are presesed
                 if event.key == pygame.K_LEFT:
                     player.change_pos(-2, 0)
                 if event.key == pygame.K_RIGHT:
@@ -256,7 +251,7 @@ def main():
                 if event.key == pygame.K_DOWN:
                     player.change_pos(0, -2)
 
-        for b in bonus_pts.bonus_sprites:
+        for b in bonus_pts.bonus_sprites: #for bonus coins, if player collides with one, add points to the score depending on what color they are
             if player.rect.colliderect(b.rect):
                 bonus_pts.bonus_sprites.remove(b)
                 coin.play()
@@ -265,7 +260,7 @@ def main():
                 elif b.color == green:
                     player.score += 1
 
-        if player.rect.x > 801:
+        if player.rect.x > 801: #if the player completes the maze/moves off screen, end the game
             game_over = True
             print("You Won!")
             print("Your Score: " + str(player.score))

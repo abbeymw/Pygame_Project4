@@ -1,11 +1,14 @@
 import pygame
- 
+from pygame import *
+from pygame.sprite import *
+from random import *
+
 white = (255, 255, 255)
-blue = (190,190,190)
+gray = (190,190,190)
 green = (0,250,154)
 red = (255, 0, 0)
 black = (0,0,0)
-blue2 = (0,191,255)
+teal = (0,191,255)
 gold = (255, 215, 0)
  
 class player_(pygame.sprite.Sprite):
@@ -15,13 +18,13 @@ class player_(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.Surface([25, 25])
-        self.image.fill(blue2)
+        self.image.fill(teal)
         self.rect = self.image.get_rect()
         self.score = 0
         self.rect.x = x
         self.rect.y = y
 
-    def change_speed(self, x, y):
+    def change_pos(self, x, y):
         self.x_pos += x
         self.y_pos += y
  
@@ -40,28 +43,6 @@ class player_(pygame.sprite.Sprite):
                 self.rect.bottom = b.rect.top
             else:
                 self.rect.top = b.rect.bottom
-            
-    # def move(self, dx, dy):
-    #     # Move each axis separately. Note that this checks for collisions both times.
-    #     if dx != 0:
-    #         self.move_single_axis(dx, 0)
-    #     if dy != 0:
-    #         self.move_single_axis(0, dy)
-    # def move_single_axis(self, dx, dy):
-    #     # Move the rect
-    #     self.rect.x += dx
-    #     self.rect.y += dy
-    #     # If you collide with a wall, move out based on velocity
-    #     for wall in Maze.wall_list:
-    #         if self.rect.colliderect(wall.rect):
-    #             if dx > 0: # Moving right; Hit the left side of the wall
-    #                 self.rect.right = wall.rect.left
-    #             if dx < 0: # Moving left; Hit the right side of the wall
-    #                 self.rect.left = wall.rect.right
-    #             if dy > 0: # Moving down; Hit the top side of the wall
-    #                 self.rect.bottom = wall.rect.top
-    #             if dy < 0: # Moving up; Hit the bottom side of the wall
-    #                 self.rect.top = wall.rect.bottom
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h, color):
@@ -121,7 +102,7 @@ class bonus_placement(Setting):
                           [680, 310, 20, 20, green],
                           [610, 215, 20, 20, green],
                           [280, 35, 20, 20, green]
-                           # ,[400, 350, 20, 20, black]
+                          #[400, 350, 20, 20, black]
                           ]
         for b in bonus_creation:
             bonus = Bonus(b[0], b[1], b[2], b[3], b[4])
@@ -132,69 +113,69 @@ class Maze(Setting):
         super().__init__()
         self.wall_list = pygame.sprite.Group()
         #[x, y, width, height]
-        walls_creation = [[0, 0, 20, 600, blue],
-                 [780, 0, 20, 250, blue],
-                 [780, 350, 20, 350, blue],
-                 [20, 0, 760, 20, blue],
-                 [20, 580, 760, 20, blue],
-                 [310, 20, 20, 40, blue],
-                 [310, 120, 20, 100, blue],
-                 [310, 250, 20, 220, blue],
-                 [310, 150, 80, 20, blue],
-                 [310, 470, 200, 20, blue],
-                 [320, 535, 20, 45, blue],
-                 [480, 535, 20, 45, blue],
-                 [400, 480, 20, 60, blue],
-                 [100, 200, 20, 100, blue], 
-                 [100, 200, 220, 20, blue],
-                 [370, 200, 20, 200, blue],
-                 [370, 55, 20, 100, blue],
-                 [430, 20, 20, 140, blue],
-                 [430, 140, 85, 20, blue],
-                 [495, 45, 20, 105, blue],
-                 [370, 200, 200, 20, blue],
-                 [60, 20, 20, 145, blue],
-                 [250, 20, 20, 145, blue],
-                 [120, 145, 130, 20, blue],
-                 [120, 60, 20, 90, blue],
-                 [120, 50, 80, 20, blue],
-                 [200, 50, 20, 50, blue],
-                 [170, 100, 50, 20, blue],
-                 [550, 20, 20, 130, blue],
-                 [550, 130, 50, 20, blue],
-                 [560, 400, 20, 180, blue],
-                 [440, 400, 120, 20, blue],
-                 [450, 250, 20, 110, blue],
-                 [450, 340, 90, 20, blue],
-                 [515, 200, 20, 95, blue],
-                 [570, 200, 20, 115, blue],
-                 [610, 50, 110, 20, blue],
-                 [720, 50, 20, 300, blue],
-                 [740, 145, 40, 20, blue],
-                 [650, 110, 20, 205, blue],
-                 [590, 245, 60, 20, blue],
-                 [20, 230, 35, 20, blue],
-                 [610, 350, 130, 20, blue],
-                 [630, 370, 20, 180, blue],
-                 [650, 530, 60, 20, blue],
-                 [710, 490, 20, 60, blue],
-                 [685, 470, 45, 20, blue],
-                 [685, 405, 95, 20, blue],
-                 [20, 520, 70, 20, blue],
-                 [125, 405, 20, 175, blue],
-                 [180, 480, 20, 100, blue],
-                 [180, 525, 100, 20, blue],
-                 [150, 220, 20, 130, blue],
-                 [150, 350, 110, 20, blue],
-                 [255, 260, 20, 110, blue],
-                 [200, 255, 75, 20, blue],
-                 [200, 255, 20, 70, blue],
-                 [180, 460, 60, 20, blue],
-                 [240, 410, 20, 70, blue],
-                 [180, 410, 70, 20, blue],
-                 [20, 330, 95, 20, blue],
-                 [60, 380, 20, 105, blue],
-                 [80, 440, 60, 20, blue]
+        walls_creation = [[0, 0, 20, 600, gray],
+                 [780, 0, 20, 250, gray],
+                 [780, 350, 20, 350, gray],
+                 [20, 0, 760, 20, gray],
+                 [20, 580, 760, 20, gray],
+                 [310, 20, 20, 40, gray],
+                 [310, 120, 20, 100, gray],
+                 [310, 250, 20, 220, gray],
+                 [310, 150, 80, 20, gray],
+                 [310, 470, 200, 20, gray],
+                 [320, 535, 20, 45, gray],
+                 [480, 535, 20, 45, gray],
+                 [400, 480, 20, 60, gray],
+                 [100, 200, 20, 100, gray], 
+                 [100, 200, 220, 20, gray],
+                 [370, 200, 20, 200, gray],
+                 [370, 55, 20, 100, gray],
+                 [430, 20, 20, 140, gray],
+                 [430, 140, 85, 20, gray],
+                 [495, 45, 20, 105, gray],
+                 [370, 200, 200, 20, gray],
+                 [60, 20, 20, 145, gray],
+                 [250, 20, 20, 145, gray],
+                 [120, 145, 130, 20, gray],
+                 [120, 60, 20, 90, gray],
+                 [120, 50, 80, 20, gray],
+                 [200, 50, 20, 50, gray],
+                 [170, 100, 50, 20, gray],
+                 [550, 20, 20, 130, gray],
+                 [550, 130, 50, 20, gray],
+                 [560, 400, 20, 180, gray],
+                 [440, 400, 120, 20, gray],
+                 [450, 250, 20, 110, gray],
+                 [450, 340, 90, 20, gray],
+                 [515, 200, 20, 95, gray],
+                 [570, 200, 20, 115, gray],
+                 [610, 50, 110, 20, gray],
+                 [720, 50, 20, 300, gray],
+                 [740, 145, 40, 20, gray],
+                 [650, 110, 20, 205, gray],
+                 [590, 245, 60, 20, gray],
+                 [20, 230, 35, 20, gray],
+                 [610, 350, 130, 20, gray],
+                 [630, 370, 20, 180, gray],
+                 [650, 530, 60, 20, gray],
+                 [710, 490, 20, 60, gray],
+                 [685, 470, 45, 20, gray],
+                 [685, 405, 95, 20, gray],
+                 [20, 520, 70, 20, gray],
+                 [125, 405, 20, 175, gray],
+                 [180, 480, 20, 100, gray],
+                 [180, 525, 100, 20, gray],
+                 [150, 220, 20, 130, gray],
+                 [150, 350, 110, 20, gray],
+                 [255, 260, 20, 110, gray],
+                 [200, 255, 75, 20, gray],
+                 [200, 255, 20, 70, gray],
+                 [180, 460, 60, 20, gray],
+                 [240, 410, 20, 70, gray],
+                 [180, 410, 70, 20, gray],
+                 [20, 330, 95, 20, gray],
+                 [60, 380, 20, 105, gray],
+                 [80, 440, 60, 20, gray]
                 ]
         for w in walls_creation:
             wall = Wall(w[0], w[1], w[2], w[3], w[4])
@@ -206,8 +187,8 @@ def main():
     disp = pygame.display.set_mode([800, 600])
     pygame.display.set_caption("Abbey's Maze Game for Project 4")
     player = player_(20, 548)
-    movingsprites = pygame.sprite.Group()
-    movingsprites.add(player)
+    moving_sprites = pygame.sprite.Group()
+    moving_sprites.add(player)
     maze = Maze()
     bonus_pts = bonus_placement()
 
@@ -227,15 +208,15 @@ def main():
 
     game_over = False
     while not game_over: 
-        player.move(maze.wall_list)
-        # player.handle_keys()
         color = white
         disp.fill(color)
+        player.move(maze.wall_list)
 
         tot_secs = start_time - (f_count//f_rate)
-        if tot_secs < 0:
+        if tot_secs < 1:
             game_over = True
             print("You ran out of time!")
+            print("Your Score: " + str(player.score))
         secs = tot_secs%60
         mins = (tot_secs//60)
         time_shown = "Time: {0:02}:{1:02}".format(mins, secs)
@@ -249,7 +230,7 @@ def main():
         disp.blit(text1, [650, 35])
 
  
-        movingsprites.draw(disp)
+        moving_sprites.draw(disp)
         maze.wall_list.draw(disp)
         bonus_pts.bonus_sprites.draw(disp)
  
@@ -260,52 +241,31 @@ def main():
                 game_over = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    player.change_speed(-2, 0)
+                    player.change_pos(-2, 0)
                 if event.key == pygame.K_RIGHT:
-                    player.change_speed(2, 0)
+                    player.change_pos(2, 0)
                 if event.key == pygame.K_UP:
-                    player.change_speed(0, -2)
+                    player.change_pos(0, -2)
                 if event.key == pygame.K_DOWN:
-                    player.change_speed(0, 2)
+                    player.change_pos(0, 2)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
-                    player.change_speed(2, 0)
+                    player.change_pos(2, 0)
                 if event.key == pygame.K_RIGHT:
-                    player.change_speed(-2, 0)
+                    player.change_pos(-2, 0)
                 if event.key == pygame.K_UP:
-                    player.change_speed(0,2)
+                    player.change_pos(0,2)
                 if event.key == pygame.K_DOWN:
-                    player.change_speed(0, -2)
-        # key = pygame.key.get_pressed()
-        # if key[pygame.K_LEFT]:
-        #     player.move(-2, 0)
-        # if key[pygame.K_RIGHT]:
-        #     player.move(2, 0)
-        # if key[pygame.K_UP]:
-        #     player.move(0, -2)
-        # if key[pygame.K_DOWN]:
-        #     player.move(0, 2)
-        # key = pygame.key.get_pressed()
-        # if key[pygame.K_LEFT]:
-        #     player.x_pos -= 2
-        # if key[pygame.K_RIGHT]:
-        #     player.x_pos += 2
-        # if key[pygame.K_UP]:
-        #     player.y_pos -= 2
-        # if key[pygame.K_DOWN]:
-        #     player.y_pos += 2
+                    player.change_pos(0, -2)
 
         for b in bonus_pts.bonus_sprites:
             if player.rect.colliderect(b.rect):
                 bonus_pts.bonus_sprites.remove(b)
                 coin.play()
-                if b.color == green:
-                    player.score += 1
-                elif b.color == gold:
+                if b.color == gold:
                     player.score += 5
-                # elif b.color == black:
-                #     color = black
-                #     disp.update()
+                elif b.color == green:
+                    player.score += 1
 
         if player.rect.x > 801:
             game_over = True
@@ -316,21 +276,4 @@ def main():
  
 if __name__ == "__main__":
     main()
-
-
-
-
-# create a rank, so like if you got between this and this score, 
-# you are a cub, this and this you are a mama bear, etc
-
-
-
-
-
-
-
-
-
-
-
 
